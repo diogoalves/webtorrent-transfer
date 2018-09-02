@@ -8,6 +8,7 @@ import magnet from 'magnet-uri';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import moment from 'moment';
 import { ForceGraph2D } from 'react-force-graph';
+import { prettyBytes } from '../utils';
 
 //TODO show download status
 //TODO list files
@@ -16,22 +17,6 @@ const client = new WebTorrent();
 client.on('error', err => {
   console.error('CLIENT ERROR: ' + err.message);
 });
-
-const prettyBytes = num => {
-  var exponent,
-    unit,
-    neg = num < 0,
-    units = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  if (neg) num = -num;
-  if (num < 1) return (neg ? '-' : '') + num + ' B';
-  exponent = Math.min(
-    Math.floor(Math.log(num) / Math.log(1000)),
-    units.length - 1
-  );
-  num = Number((num / Math.pow(1000, exponent)).toFixed(2));
-  unit = units[exponent];
-  return (neg ? '-' : '') + num + ' ' + unit;
-};
 
 class App extends Component {
   state = {
