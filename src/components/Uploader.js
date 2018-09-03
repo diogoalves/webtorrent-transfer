@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
 import WebTorrent from 'webtorrent';
-import { withStyles } from '@material-ui/core/styles';
+import AddIcon from '@material-ui/icons/Add';
+import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import AddIcon from '@material-ui/icons/Add';
-import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import FlashOnIcon from '@material-ui/icons/FlashOn';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import IconButton from '@material-ui/core/IconButton';
+import ShareIcon from '@material-ui/icons/Share';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
 import { prettyBytes } from '../utils';
 import UploadFileList from './UploadFileList';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import FlashOnIcon from '@material-ui/icons/FlashOn';
-import ShareIcon from '@material-ui/icons/Share';
 import copy from 'copy-to-clipboard';
 
-// TODO send email using emailjs.com
 // TODO try using zip.js to create a protected content
 // TODO try on update insteade of a setInterval
 // TODO when the file is big add some loading
+// TODO put webtorrent client inside react
 const client = new WebTorrent();
 
 const styles = theme => ({
@@ -141,6 +141,12 @@ class Uploader extends Component {
     window.location.assign(this.state.torrentFileBlobURL);
   };
 
+  mailMagnetLink = () => {
+    const body = `Go to http://downlo.ad/${this.state.magnet}`;
+    const url = `mailto:?to=&subject=Some%20files%20were%20shared%20with%20you&body=${body}`;
+    window.open(url, '_blank');
+  };
+
   render() {
     const { classes } = this.props;
     const { files, infoHash, numPeers, uploadSpeed, progress } = this.state;
@@ -220,7 +226,7 @@ class Uploader extends Component {
                   <FlashOnIcon />
                 </IconButton>
                 <IconButton>
-                  <ShareIcon onClick={() => console.log(this.state)} />
+                  <ShareIcon onClick={this.mailMagnetLink} />
                 </IconButton>
               </React.Fragment>
             )}
