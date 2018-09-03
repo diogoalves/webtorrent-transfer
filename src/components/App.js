@@ -8,8 +8,8 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Route path="/" component={Uploader} />
-        <Route path="/:downloadLink" component={Downloader} />
+        <Route exact path="/" component={Uploader} />
+        <Route path="/:infoHash" component={Downloader} />
       </div>
     );
   }

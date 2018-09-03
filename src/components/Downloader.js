@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import WebTorrent from 'webtorrent';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 import withRoot from './withRoot';
-import magnet from 'magnet-uri';
 // import { withStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import moment from 'moment';
-import { ForceGraph2D } from 'react-force-graph';
+// import { ForceGraph2D } from 'react-force-graph';
 import { prettyBytes } from '../utils';
 
 //TODO show download status
@@ -20,8 +17,6 @@ client.on('error', err => {
 
 class App extends Component {
   state = {
-    magnet:
-      'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent',
     progress: 0,
     done: false,
     numPeers: 0,
@@ -37,17 +32,19 @@ class App extends Component {
     }
   };
 
-  handleChange = key => event => {
-    this.setState({
-      ...this.state,
-      [key]: event.target.value
-    });
-  };
+  componentDidMount() {
+    //const { match: { params: { infoHash } } } = this.props;
+    const infoHash = '08ada5a7a6183aae1e09d831df6748d566095a10';
+    const opts = {
+      announce: [
+        'wss://tracker.openwebtorrent.com',
+        'wss://tracker.btorrent.xyz'
+      ]
+    };
+    console.log(`Downloading ${infoHash}`);
+    client.add(infoHash, opts, torrent => {
+      console.log(`Torrent voltou ${infoHash}`);
 
-  download = () => {
-    console.log(magnet(this.state.magnet));
-    this.setState({ torrent: magnet(this.state.magnet) });
-    client.add(this.state.magnet, torrent => {
       const file = torrent.files.find(file => file.name.endsWith('.mp4'));
       file.appendTo('body');
 
@@ -90,11 +87,10 @@ class App extends Component {
         }));
       });
     });
-  };
+  }
 
   render() {
     const {
-      magnet,
       progress,
       done,
       torrent,
@@ -105,21 +101,9 @@ class App extends Component {
       downloadSpeed,
       uploadSpeed
     } = this.state;
+
     return (
       <div>
-        <TextField
-          id="full-width"
-          label="Magnet link"
-          InputLabelProps={{
-            shrink: true
-          }}
-          placeholder="Paste here the magnet lint"
-          fullWidth
-          margin="normal"
-          onChange={this.handleChange('magnet')}
-          value={magnet}
-        />
-        <Button onClick={this.download}>Start downloading</Button>
         <div>
           {`${done ? 'Seeding' : 'Downloading'} ${
             torrent.name
@@ -128,7 +112,7 @@ class App extends Component {
         <div>{` ${downloaded} of ${total} - ${remaining}`}</div>
         <div>{` ↓${downloadSpeed} |  ↑${uploadSpeed}`}</div>
         <LinearProgress variant="determinate" value={progress} />
-        <ForceGraph2D graphData={this.state.graph} />
+        {/* <ForceGraph2D graphData={this.state.graph} /> */}
       </div>
     );
   }
