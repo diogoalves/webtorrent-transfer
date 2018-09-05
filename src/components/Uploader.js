@@ -74,7 +74,13 @@ class Uploader extends Component {
   };
 
   seed = files => {
-    client.seed(this.state.files, torrent => {
+    const opts = {
+      announce: [
+        'wss://tracker.openwebtorrent.com',
+        'wss://tracker.btorrent.xyz'
+      ]
+    };
+    client.seed(this.state.files, opts, torrent => {
       this.setState({
         infoHash: torrent.infoHash,
         magnet: torrent.magnetURI,
