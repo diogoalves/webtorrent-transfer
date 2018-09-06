@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import WebTorrent from 'webtorrent';
-import withRoot from './withRoot';
 // import { withStyles } from '@material-ui/core/styles';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import moment from 'moment';
 // import { ForceGraph2D } from 'react-force-graph';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
+
 import { withStyles } from '@material-ui/core/styles';
 import { prettyBytes } from '../utils';
+import CircularProgressWithLabel from './CircularProgressWIthLabel';
 
 //TODO show download status
 //TODO list files
@@ -20,22 +19,9 @@ client.on('error', err => {
 
 const styles = theme => ({
   root: {
-    paddingTop: '50px',
-    paddingLeft: '50px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  fabProgress: {
-    position: 'relative',
-    // top: -20,
-    zIndex: 1
-  },
-  textProgress: {
-    position: 'relative',
-    // top: 77,
-    right: -110,
-    zIndex: 1
   }
 });
 
@@ -103,8 +89,10 @@ class App extends Component {
 
       torrent.on('done', () => {
         console.log('Progress: 100%');
-        this.setState({ done: true });
-        clearInterval(interval);
+        this.setState({
+          done: true
+        });
+        // clearInterval(interval);
       });
 
       torrent.on('wire', (wire, addr) => {
@@ -132,27 +120,17 @@ class App extends Component {
     } = this.state;
     const { classes } = this.props;
 
-    const progress2 = 100;
     return (
       <div className={classes.root}>
-        <Typography className={classes.textProgress} variant="display2">
-          {progress2}
-        </Typography>
-        <CircularProgress
-          className={classes.fabProgress}
-          size={144}
-          color="secondary"
-          variant="determinate"
-          value={progress2}
-        />
+        <CircularProgressWithLabel progress={progress} />
         <div>
-          <div>
+          <Typography variant="caption">
             {`${done ? 'Seeding' : 'Downloading'} ${
               torrent.name
             } from ${numPeers}`}
-          </div>
-          <div>{` ${downloaded} of ${total} - ${remaining}`}</div>
-          <div>{` ↓${downloadSpeed} |  ↑${uploadSpeed}`}</div>
+          </Typography>
+          <Typography variant="caption">{` ${downloaded} of ${total} - ${remaining}`}</Typography>
+          <Typography variant="caption">{` ↓${downloadSpeed} |  ↑${uploadSpeed}`}</Typography>
           {/* <ForceGraph2D graphData={this.state.graph} /> */}
         </div>
       </div>
