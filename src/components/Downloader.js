@@ -3,11 +3,23 @@ import WebTorrent from 'webtorrent';
 // import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment';
 // import { ForceGraph2D } from 'react-force-graph';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
 
 import { withStyles } from '@material-ui/core/styles';
 import { prettyBytes } from '../utils';
-import CircularProgressWithLabel from './CircularProgressWIthLabel';
+import DownloadStatus from './DownloadStatus';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
+import Grid from '@material-ui/core/Grid';
+import FolderIcon from '@material-ui/icons/Folder';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 //TODO show download status
 //TODO list files
@@ -20,19 +32,20 @@ client.on('error', err => {
 const styles = theme => ({
   root: {
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
+    flexGrow: 1
   }
 });
 
 class App extends Component {
   state = {
+    tabValue: 0,
+    torrent: { files: [] },
+    status: null,
     progress: 0,
     done: false,
     numPeers: 0,
     downloaded: 0,
     total: 0,
-    torrent: {},
     remaining: '',
     downloadSpeed: '0 B/s',
     uploadSpeed: '0 B/s',
@@ -59,11 +72,12 @@ class App extends Component {
     };
     console.log(infoHash);
     client.add(infoHash, opts, torrent => {
+      this.setState({ torrent, files: torrent.files });
       // const file = torrent.files.find(file => file.name.endsWith('.mp4'));
       // file.appendTo('body');
-      torrent.files.map(file => file.appendTo('body'));
-
-      var interval = setInterval(() => {
+      //torrent.files.map(file => file.appendTo('body'));
+      console.log(torrent);
+      setInterval(() => {
         let remaining;
         if (torrent.done) {
           remaining = 'Done.';
@@ -76,14 +90,16 @@ class App extends Component {
         }
 
         this.setState({
-          progress: Math.round(torrent.progress * 100 * 100) / 100,
-          numPeers:
-            torrent.numPeers + (torrent.numPeers === 1 ? ' peer' : ' peers'),
-          downloaded: prettyBytes(torrent.downloaded),
-          total: prettyBytes(torrent.length),
-          remaining,
-          downloadSpeed: prettyBytes(torrent.downloadSpeed) + '/s',
-          uploadSpeed: prettyBytes(torrent.uploadSpeed) + '/s'
+          status: {
+            progress: Math.round(torrent.progress * 100 * 100) / 100,
+            numPeers:
+              torrent.numPeers + (torrent.numPeers === 1 ? ' peer' : ' peers'),
+            downloaded: prettyBytes(torrent.downloaded),
+            total: prettyBytes(torrent.length),
+            remaining,
+            downloadSpeed: prettyBytes(torrent.downloadSpeed) + '/s',
+            uploadSpeed: prettyBytes(torrent.uploadSpeed) + '/s'
+          }
         });
       }, 1000);
 
@@ -106,36 +122,57 @@ class App extends Component {
     });
   }
 
+  handleTabChange = (event, tabValue) => {
+    this.setState({ tabValue });
+  };
+
   render() {
-    const {
-      progress,
-      done,
-      torrent,
-      numPeers,
-      downloaded,
-      total,
-      remaining,
-      downloadSpeed,
-      uploadSpeed
-    } = this.state;
+    const { files = [], tabValue, status } = this.state;
     const { classes } = this.props;
 
     return (
       <div className={classes.root}>
-        <CircularProgressWithLabel progress={progress} />
-        <div>
-          <Typography variant="caption">
-            {`${done ? 'Seeding' : 'Downloading'} ${
-              torrent.name
-            } from ${numPeers}`}
-          </Typography>
-          <Typography variant="caption">{` ${downloaded} of ${total} - ${remaining}`}</Typography>
-          <Typography variant="caption">{` ↓${downloadSpeed} |  ↑${uploadSpeed}`}</Typography>
-          {/* <ForceGraph2D graphData={this.state.graph} /> */}
-        </div>
+        <Grid container>
+          <Grid item xs={12}>
+            <DownloadStatus status={status} />
+          </Grid>
+          <Grid item xs={12}>
+            <Tabs value={tabValue} onChange={this.handleTabChange} fullWidth>
+              <Tab label="Files" />
+              <Tab label="Details" />
+            </Tabs>
+          </Grid>
+          <Grid item xs={12}>
+            <List dense>
+              {files.map(f => (
+                <ListI
+                  key={f.name}
+                  fileName={f.name}
+                  size={prettyBytes(f.length)}
+                />
+              ))}
+            </List>
+          </Grid>
+        </Grid>
       </div>
     );
   }
 }
 
 export default withStyles(styles)(App);
+
+const ListI = ({ fileName, size }) => (
+  <ListItem>
+    <ListItemAvatar>
+      <Avatar>
+        <FolderIcon />
+      </Avatar>
+    </ListItemAvatar>
+    <ListItemText primary={fileName} secondary={size} />
+    <ListItemSecondaryAction>
+      <IconButton aria-label="Delete">
+        <DeleteIcon />
+      </IconButton>
+    </ListItemSecondaryAction>
+  </ListItem>
+);
