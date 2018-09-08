@@ -22,8 +22,9 @@ const styles = theme => ({
 class App extends Component {
   state = {
     tabValue: 0,
-    torrent: { files: [] },
-    status: null
+    status: null,
+    files: [],
+    downloadLinks: []
   };
 
   componentDidMount() {
@@ -40,6 +41,7 @@ class App extends Component {
     };
     client.add(infoHash, opts, torrent => {
       this.setState({ torrent, files: torrent.files });
+      console.log(torrent.files);
       setInterval(() => {
         let remaining;
         if (torrent.done) {
@@ -69,6 +71,16 @@ class App extends Component {
       }, 1000);
 
       torrent.on('done', () => {
+        torrent.files.map((f, i) =>
+          f.getBlobURL((err, url) => {
+            this.setState(state => {
+              const downloadLinks = state.downloadLinks;
+              downloadLinks[i] = url;
+              return { downloadLinks };
+            });
+          })
+        );
+
         this.setState({
           done: true
         });
@@ -81,7 +93,7 @@ class App extends Component {
   };
 
   render() {
-    const { files = [], tabValue, status } = this.state;
+    const { files, downloadLinks, tabValue, status } = this.state;
     const { classes } = this.props;
 
     return (
@@ -98,11 +110,12 @@ class App extends Component {
           </Grid>
           <Grid item xs={12}>
             <List dense>
-              {files.map(f => (
+              {files.map((f, i) => (
                 <DownloadFileItem
                   key={f.name}
                   fileName={f.name}
                   size={prettyBytes(f.length)}
+                  downloadLink={downloadLinks[i]}
                 />
               ))}
             </List>

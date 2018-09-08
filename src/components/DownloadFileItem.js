@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DownloadIcon from '@material-ui/icons/GetApp';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
-const DownloadFileItem = ({ fileName, size }) => (
+const DownloadFileItem = ({ fileName, size, downloadLink }) => (
   <ListItem>
     <ListItemAvatar>
       <Avatar>
@@ -16,11 +16,13 @@ const DownloadFileItem = ({ fileName, size }) => (
       </Avatar>
     </ListItemAvatar>
     <ListItemText primary={fileName} secondary={size} />
-    <ListItemSecondaryAction>
-      <IconButton onClick={() => window.assign('www.google.com')}>
-        <DownloadIcon />
-      </IconButton>
-    </ListItemSecondaryAction>
+    {downloadLink && (
+      <ListItemSecondaryAction>
+        <IconButton component="a" href={downloadLink} download>
+          <DownloadIcon />
+        </IconButton>
+      </ListItemSecondaryAction>
+    )}
   </ListItem>
 );
 
