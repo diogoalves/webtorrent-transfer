@@ -40,9 +40,18 @@ class App extends Component {
       ]
     };
     client.add(infoHash, opts, torrent => {
-      this.setState({ torrent, files: torrent.files });
-      console.log(torrent.files);
-      setInterval(() => {
+      this.setState({
+        torrent,
+        files: torrent.files,
+        status: {
+          total: prettyBytes(torrent.length),
+          name: torrent.name
+        }
+      });
+
+      torrent.on('download', () => {
+        const progress = Math.round(torrent.progress * 100 * 100) / 100;
+        document.title = `${progress}%`;
         let remaining;
         if (torrent.done) {
           remaining = 'Done';
@@ -56,19 +65,19 @@ class App extends Component {
 
         this.setState({
           status: {
-            progress: Math.round(torrent.progress * 100 * 100) / 100,
+            progress,
             numPeers:
               torrent.numPeers + (torrent.numPeers === 1 ? ' peer' : ' peers'),
             downloaded: prettyBytes(torrent.downloaded),
-            total: prettyBytes(torrent.length),
             remaining,
             downloadSpeed: prettyBytes(torrent.downloadSpeed) + '/s',
             uploadSpeed: prettyBytes(torrent.uploadSpeed) + '/s',
             done: torrent.done,
+            total: prettyBytes(torrent.length),
             name: torrent.name
           }
         });
-      }, 1000);
+      });
 
       torrent.on('done', () => {
         torrent.files.map((f, i) =>
