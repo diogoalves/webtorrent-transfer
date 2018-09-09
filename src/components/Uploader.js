@@ -54,10 +54,6 @@ class Uploader extends Component {
     uploadSpeed: 0,
     ratio: 0,
     numPeers: 0,
-    graph: {
-      nodes: [{ id: 'me', name: 'me' }],
-      links: []
-    },
     interval: null,
     progress: 0,
     size: 0
@@ -92,15 +88,6 @@ class Uploader extends Component {
       this.setState({
         interval
       });
-
-      torrent.on('wire', (wire, addr) => {
-        this.setState(state => ({
-          graph: {
-            nodes: state.graph.nodes.concat({ id: addr, name: addr }),
-            links: state.graph.links.concat({ source: 'me', target: addr })
-          }
-        }));
-      });
     });
   };
 
@@ -119,10 +106,6 @@ class Uploader extends Component {
       uploadSpeed: 0,
       ratio: 0,
       numPeers: 0,
-      graph: {
-        nodes: [{ id: 'me', name: 'me' }],
-        links: []
-      },
       interval: null,
       progress: 0,
       size
