@@ -6,16 +6,17 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import FlashOnIcon from '@material-ui/icons/FlashOn';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import IconButton from '@material-ui/core/IconButton';
-import ShareIcon from '@material-ui/icons/Share';
+import EmailIcon from '@material-ui/icons/Email';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import { prettyBytes } from '../utils';
 import UploadFileList from './UploadFileList';
 import copy from 'copy-to-clipboard';
 import CircularProgressWithLabel from './CircularProgressWIthLabel';
+import Tooltip from '@material-ui/core/Tooltip';
+import MagnetIcon from './MagnetIcon';
 
 // TODO try using zip.js to create a protected content
 // TODO try on update insteade of a setInterval
@@ -121,7 +122,13 @@ class Uploader extends Component {
   };
 
   mailMagnetLink = () => {
-    const body = `Go to http://downlo.ad/${this.state.magnet}`;
+    const body = `Go to ${window.location.href}${
+      this.state.infoHash
+    } or paste the cliboard link`;
+    //<a href='javascript:window.open("javascript:(()=>{s=document.createElement(\"script\");s.src=\"https://cdn.jsdelivr.net/webtorrent/latest/webtorrent.min.js\";document.getElementsByTagName(\"head\")[0].appendChild(s);var torrentId = \"magnet:?xt=urn:btih:ab07460e58c38bf6a59a8040d03472cb99d2537c&dn=0fe27a87-282e-4eda-bd05-8e40eead328e.png&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com\";var client;setTimeout(()=>{client = new WebTorrent();client.add(torrentId, (torrent) => {torrent.files.find(file => file.appendTo(\"body\"));torrent.on(\"download\",()=>{document.title = `${Math.round(torrent.progress * 100 * 100) / 100}%`;});torrent.on(\"done\", () => {torrent.files.map((f, i) => f.getBlobURL((err, url) => {var l = document.createElement(\"a\");l.download = f.name;l.href = url;l.click(); console.log(url)}));});});}, 3000);console.log(11) })()")'>Download47</a>
+    copy(
+      'javascript:window.open("javascript:(()=>{s=document.createElement("script");s.src="https://cdn.jsdelivr.net/webtorrent/latest/webtorrent.min.js";document.getElementsByTagName("head")[0].appendChild(s);var torrentId = "magnet:?xt=urn:btih:ab07460e58c38bf6a59a8040d03472cb99d2537c&dn=0fe27a87-282e-4eda-bd05-8e40eead328e.png&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com";var client;setTimeout(()=>{client = new WebTorrent();client.add(torrentId, (torrent) => {torrent.files.find(file => file.appendTo("body"));torrent.on("download",()=>{document.title = `${Math.round(torrent.progress * 100 * 100) / 100}%`;});torrent.on("done", () => {torrent.files.map((f, i) => f.getBlobURL((err, url) => {var l = document.createElement("a");l.download = f.name;l.href = url;l.click(); console.log(url)}));});});}, 3000);console.log(11) })()")'
+    );
     const url = `mailto:?to=&subject=Some%20files%20were%20shared%20with%20you&body=${body}`;
     window.open(url, '_blank');
   };
@@ -189,15 +196,21 @@ class Uploader extends Component {
             )}
             {infoHash && (
               <React.Fragment>
-                <IconButton onClick={this.downloadTorrent}>
-                  <GetAppIcon />
-                </IconButton>
-                <IconButton onClick={this.copyMagnetToClipboard}>
-                  <FlashOnIcon />
-                </IconButton>
-                <IconButton>
-                  <ShareIcon onClick={this.mailMagnetLink} />
-                </IconButton>
+                <Tooltip title="Download torrent file">
+                  <IconButton onClick={this.downloadTorrent}>
+                    <GetAppIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Copy magnet link to clipboard">
+                  <IconButton onClick={this.copyMagnetToClipboard}>
+                    <MagnetIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Email download link">
+                  <IconButton>
+                    <EmailIcon onClick={this.mailMagnetLink} />
+                  </IconButton>
+                </Tooltip>
               </React.Fragment>
             )}
           </CardActions>
