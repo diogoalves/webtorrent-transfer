@@ -107,7 +107,7 @@ class Uploader extends Component {
   };
 
   mailMagnetLink = () => {
-    const body = `Go to ${window.location.href}${this.state.infoHash}`;
+    const body = `Go to https://downloader.now.sh/?${this.state.infoHash}`;
     const url = `mailto:?to=&subject=Some%20files%20were%20shared%20with%20you&body=${body}`;
     window.open(url, '_blank');
   };
