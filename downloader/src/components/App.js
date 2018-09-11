@@ -29,7 +29,9 @@ class App extends Component {
   };
 
   componentDidMount() {
-    const infoHash = window.location.pathname.substr(1);
+    const infoHash = window.location.href.substr(
+      window.location.href.indexOf('?') + 1
+    );
     const opts = {
       announce: [
         'wss://tracker.openwebtorrent.com',
