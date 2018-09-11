@@ -13,7 +13,7 @@ const styles = theme => ({
   }
 });
 
-function FolderList(props) {
+function FileList(props) {
   const { classes, files } = props;
   if (!files) return null;
   return (
@@ -32,4 +32,4 @@ function FolderList(props) {
   );
 }
 
-export default withStyles(styles)(FolderList);
+export default withStyles(styles)(FileList);

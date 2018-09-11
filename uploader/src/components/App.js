@@ -12,12 +12,12 @@ import EmailIcon from '@material-ui/icons/Email';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import { prettyBytes } from '../utils';
-import UploadFileList from './UploadFileList';
+import FileList from './FileList';
 import copy from 'copy-to-clipboard';
-import CircularProgressWithLabel from './CircularProgressWIthLabel';
 import Tooltip from '@material-ui/core/Tooltip';
 import MagnetIcon from './MagnetIcon';
 import withRoot from './withRoot';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // TODO try using zip.js to create a protected content
 // TODO when the file is big add some loading
@@ -54,7 +54,6 @@ class Uploader extends Component {
     uploadSpeed: 0,
     ratio: 0,
     numPeers: 0,
-    progress: 0,
     size: 0
   };
 
@@ -82,8 +81,7 @@ class Uploader extends Component {
             torrent.numPeers + (torrent.numPeers === 1 ? ' peer' : ' peers'),
           uploadSpeed: prettyBytes(torrent.uploadSpeed) + '/s',
           uploaded: prettyBytes(torrent.uploaded),
-          ratio: torrent.ratio,
-          progress: Math.round((torrent.uploaded / this.state.size) * 100)
+          ratio: torrent.ratio
         });
       }, 1000);
     });
@@ -114,7 +112,7 @@ class Uploader extends Component {
 
   render() {
     const { classes } = this.props;
-    const { files, infoHash, numPeers, uploadSpeed, progress } = this.state;
+    const { files, infoHash, numPeers, uploadSpeed } = this.state;
     return (
       <div className={classes.root}>
         <Card className={classes.card}>
@@ -147,11 +145,11 @@ class Uploader extends Component {
           )}
 
           <CardContent align="center">
-            {!infoHash && <UploadFileList files={files} />}
+            {!infoHash && <FileList files={files} />}
 
             {infoHash && (
               <React.Fragment>
-                <CircularProgressWithLabel progress={progress} />
+                <CircularProgress color="secondary" size={144}/>
                 <Typography
                 >{`Seeding ↑${uploadSpeed} to ${numPeers}`}</Typography>
                 <Typography variant="caption">
