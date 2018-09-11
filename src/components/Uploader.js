@@ -19,7 +19,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import MagnetIcon from './MagnetIcon';
 
 // TODO try using zip.js to create a protected content
-// TODO try on update insteade of a setInterval
 // TODO when the file is big add some loading
 // TODO put webtorrent client inside react
 const client = new WebTorrent();
@@ -49,16 +48,18 @@ class Uploader extends Component {
     files: null,
     infoHash: null,
     magnet: null,
-    torrentFile: null,
     torrentFileBlobURL: null,
     uploaded: 0,
     uploadSpeed: 0,
     ratio: 0,
     numPeers: 0,
-    interval: null,
     progress: 0,
     size: 0
   };
+
+  componentDidMount() {
+    document.title = 'Uploader';
+  }
 
   seed = files => {
     const opts = {
@@ -71,12 +72,10 @@ class Uploader extends Component {
       this.setState({
         infoHash: torrent.infoHash,
         magnet: torrent.magnetURI,
-        torrentFile: torrent.torrentFile,
         torrentFileBlobURL: torrent.torrentFileBlobURL
       });
-      console.log('Client is seeding ' + torrent.magnetURI);
 
-      var interval = setInterval(() => {
+      setInterval(() => {
         this.setState({
           numPeers:
             torrent.numPeers + (torrent.numPeers === 1 ? ' peer' : ' peers'),
@@ -86,29 +85,14 @@ class Uploader extends Component {
           progress: Math.round((torrent.uploaded / this.state.size) * 100)
         });
       }, 1000);
-      this.setState({
-        interval
-      });
     });
   };
 
   handleChange = event => {
-    clearInterval(this.state.interval);
     const files = event.target.files;
     const size = Array.from(files).reduce((acc, cur) => acc + cur.size, 0);
-
     this.setState({
       files: files,
-      infoHash: null,
-      magnet: null,
-      torrentFile: null,
-      torrentFileBlobURL: null,
-      uploaded: 0,
-      uploadSpeed: 0,
-      ratio: 0,
-      numPeers: 0,
-      interval: null,
-      progress: 0,
       size
     });
   };
@@ -122,13 +106,7 @@ class Uploader extends Component {
   };
 
   mailMagnetLink = () => {
-    const body = `Go to ${window.location.href}${
-      this.state.infoHash
-    } or paste the cliboard link`;
-    //<a href='javascript:window.open("javascript:(()=>{s=document.createElement(\"script\");s.src=\"https://cdn.jsdelivr.net/webtorrent/latest/webtorrent.min.js\";document.getElementsByTagName(\"head\")[0].appendChild(s);var torrentId = \"magnet:?xt=urn:btih:ab07460e58c38bf6a59a8040d03472cb99d2537c&dn=0fe27a87-282e-4eda-bd05-8e40eead328e.png&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com\";var client;setTimeout(()=>{client = new WebTorrent();client.add(torrentId, (torrent) => {torrent.files.find(file => file.appendTo(\"body\"));torrent.on(\"download\",()=>{document.title = `${Math.round(torrent.progress * 100 * 100) / 100}%`;});torrent.on(\"done\", () => {torrent.files.map((f, i) => f.getBlobURL((err, url) => {var l = document.createElement(\"a\");l.download = f.name;l.href = url;l.click(); console.log(url)}));});});}, 3000);console.log(11) })()")'>Download47</a>
-    copy(
-      'javascript:window.open("javascript:(()=>{s=document.createElement("script");s.src="https://cdn.jsdelivr.net/webtorrent/latest/webtorrent.min.js";document.getElementsByTagName("head")[0].appendChild(s);var torrentId = "magnet:?xt=urn:btih:ab07460e58c38bf6a59a8040d03472cb99d2537c&dn=0fe27a87-282e-4eda-bd05-8e40eead328e.png&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com";var client;setTimeout(()=>{client = new WebTorrent();client.add(torrentId, (torrent) => {torrent.files.find(file => file.appendTo("body"));torrent.on("download",()=>{document.title = `${Math.round(torrent.progress * 100 * 100) / 100}%`;});torrent.on("done", () => {torrent.files.map((f, i) => f.getBlobURL((err, url) => {var l = document.createElement("a");l.download = f.name;l.href = url;l.click(); console.log(url)}));});});}, 3000);console.log(11) })()")'
-    );
+    const body = `Go to ${window.location.href}${this.state.infoHash}`;
     const url = `mailto:?to=&subject=Some%20files%20were%20shared%20with%20you&body=${body}`;
     window.open(url, '_blank');
   };

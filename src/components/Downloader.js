@@ -28,6 +28,7 @@ class App extends Component {
   };
 
   componentDidMount() {
+    document.title = 'Downloader';
     const {
       match: {
         params: { infoHash }
