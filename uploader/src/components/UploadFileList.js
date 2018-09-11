@@ -16,7 +16,6 @@ const styles = theme => ({
 function FolderList(props) {
   const { classes, files } = props;
   if (!files) return null;
-  console.log(files);
   return (
     <div className={classes.root}>
       <List>

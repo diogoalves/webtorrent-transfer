@@ -1,21 +1,20 @@
 {
-  "name": "webtorrent-downloader",
+  "name": "webtorrent-transfer-downloader",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.0.1",
     "@material-ui/icons": "^3.0.1",
-    "copy-to-clipboard": "^3.0.8",
-    "husky": "^0.14.3",
-    "lint-staged": "^7.2.2",
     "moment": "^2.22.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
-    "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1",
     "react-scripts": "next",
-    "source-map-explorer": "^1.6.0",
     "webtorrent": "^0.102.2"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.2",
+    "source-map-explorer": "^1.6.0"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,json,css}": [

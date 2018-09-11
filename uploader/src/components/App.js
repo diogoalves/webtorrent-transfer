@@ -17,6 +17,7 @@ import copy from 'copy-to-clipboard';
 import CircularProgressWithLabel from './CircularProgressWIthLabel';
 import Tooltip from '@material-ui/core/Tooltip';
 import MagnetIcon from './MagnetIcon';
+import withRoot from './withRoot';
 
 // TODO try using zip.js to create a protected content
 // TODO when the file is big add some loading
@@ -198,4 +199,4 @@ class Uploader extends Component {
   }
 }
 
-export default withStyles(styles)(Uploader);
+export default withRoot(withStyles(styles)(Uploader));

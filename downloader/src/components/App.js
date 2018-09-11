@@ -9,6 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import { prettyBytes } from '../utils';
 import DownloadFileItem from './DownloadFileItem';
 import DownloadStatus from './DownloadStatus';
+import withRoot from './withRoot';
 
 const client = new WebTorrent();
 
@@ -28,12 +29,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    document.title = 'Downloader';
-    const {
-      match: {
-        params: { infoHash }
-      }
-    } = this.props;
+    const infoHash = window.location.pathname.substr(1);
     const opts = {
       announce: [
         'wss://tracker.openwebtorrent.com',
@@ -136,4 +132,4 @@ class App extends Component {
   }
 }
 
-export default withStyles(styles)(App);
+export default withRoot(withStyles(styles)(App));

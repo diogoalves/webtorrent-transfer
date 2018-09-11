@@ -50,8 +50,7 @@ class DownloadStatus extends Component {
       downloadSpeed = 0,
       uploadSpeed = 0,
       progress = 0
-    } =
-      status || {};
+    } = status || {};
     return (
       <div className={classes.root}>
         <IconButton variant="fab" className={classes.button} onClick={toggle}>
