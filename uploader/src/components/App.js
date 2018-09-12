@@ -62,10 +62,15 @@ class Uploader extends Component {
   }
 
   seed = files => {
+    // const opts = {
+    //   announce: [
+    //     'wss://tracker.openwebtorrent.com',
+    //     'wss://tracker.btorrent.xyz'
+    //   ]
+    // };
     const opts = {
       announce: [
-        'wss://tracker.openwebtorrent.com',
-        'wss://tracker.btorrent.xyz'
+        'ws://localhost:8000'
       ]
     };
     client.seed(this.state.files, opts, torrent => {

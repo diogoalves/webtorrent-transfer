@@ -21,6 +21,7 @@
   "homepage": "https://github.com/diogoalves/webtorrent-transfer#readme",
   "dependencies": {
     "bittorrent-tracker": "^9.10.1",
-    "webtorrent": "^0.102.4"
+    "webtorrent": "^0.102.4",
+    "webtorrent-hybrid": "^1.0.6"
   }
 }
