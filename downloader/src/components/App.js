@@ -35,14 +35,12 @@ class App extends Component {
     const infoHash = window.location.href.substr(
       window.location.href.indexOf('?') + 1
     );
-    // const opts = {
-    //   announce: [
-    //     'wss://tracker.openwebtorrent.com',
-    //     'wss://tracker.btorrent.xyz'
-    //   ]
-    // };
     const opts = {
-      announce: ['ws://localhost:8000']
+      announce: [
+        'wss://tracker.openwebtorrent.com',
+        'wss://tracker.btorrent.xyz',
+        'ws://localhost:8000'
+      ]
     };
     client.add(infoHash, opts, torrent => {
       this.setState({

@@ -59,17 +59,13 @@ class Uploader extends Component {
 
   componentDidMount() {
     document.title = 'Uploader';
-  }
+ } 
 
   seed = files => {
-    // const opts = {
-    //   announce: [
-    //     'wss://tracker.openwebtorrent.com',
-    //     'wss://tracker.btorrent.xyz'
-    //   ]
-    // };
     const opts = {
       announce: [
+        'wss://tracker.openwebtorrent.com',
+        'wss://tracker.btorrent.xyz',
         'ws://localhost:8000'
       ]
     };
